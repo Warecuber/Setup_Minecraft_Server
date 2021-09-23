@@ -70,13 +70,13 @@ setupMCServerDirectory() {
 
 # Install MC Server 1.17.1
 installMCServer() {
-  read -n1 -p "\nDo you want to install a vanilla Minecraft 1.17.1 server now? y/n: " installServer
+  read -n1 -p "Do you want to install a vanilla Minecraft 1.17.1 server now? y/n: " installServer
   if [[ "$installServer" == "y" || "$installServer" == "Y" ]]; then
     echo "Installing MC Server 1.17.1"
     sudo wget https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar -P $MC_SERVER_DIR
     echo "eula=true" >$MC_SERVER_DIR/eula.txt
   else
-    echo "\nNot installing MC server 1.17.1"
+    echo "Not installing MC server 1.17.1"
   fi
   sudo chown -R root:mc_server_admin $MC_SERVER_DIR
   sudo chmod 770 -R $MC_SERVER_DIR
@@ -93,7 +93,7 @@ installAndStartMCService() {
 }
 
 determineIfServiceIsDesired() {
-  read -n1 -p "\nDo you want to add a Minecraft service? This allows you to start or stop the server with systemctl y/n: " addService
+  read -n1 -p "Do you want to add a Minecraft service? This allows you to start or stop the server with systemctl y/n: " addService
   if [[ "$addService" == "y" || "$addService" == "Y" ]]; then
     installAndStartMCService
   fi
@@ -125,9 +125,17 @@ else
       installJava
       setupMCServerDirectory
       installMCServer
-      determineIfServiceIsDesired
     elif [["$RHEL_VERSION" == *"CentOS"*]]; then
       echo "You are on CentOS"
+      installPackagesForCentOS
+      setFirewallRulesRHEL
+      createMCUserAndGroups
+      installJava
+      setupMCServerDirectory
+      installMCServer
+      determineIfServiceIsDesired
+    elif [["$RHEL_VERSION" == *"Alma"*]]; then
+      echo "You are on Alma Linux!"
       installPackagesForCentOS
       setFirewallRulesRHEL
       createMCUserAndGroups
