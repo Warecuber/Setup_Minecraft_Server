@@ -7,7 +7,7 @@ $JAVA_HOME="/opt/jdk-16.0.2"
 # Install packages
 sudo dnf update -y
 sudo dnf install epel-release wget -y
-sudo dnf install htop glances neofetch nano -y
+sudo dnf install htop glances neofetch nano tmux -y
 
 # Open port 25565 on the firewall
 sudo firewall-cmd --permanent --zone=public --add-port=25565/tcp
