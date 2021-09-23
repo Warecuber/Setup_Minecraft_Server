@@ -8,7 +8,8 @@ Group=minecraft
 Restart=on-failure
 RestartSec=20 5
 Type=simple
-ExecStart=/opt/minecraft/server/start_minecraft_server.sh
+WorkingDirectory=/opt/minecraft/server
+ExecStart=start_minecraft_server.sh
 TimeoutStartSec=0
 
 [Install]
