@@ -1,0 +1,11 @@
+[Unit]
+Description=Start Minecraft
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/minecraft/server/start_minecraft_server.sh
+TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target
