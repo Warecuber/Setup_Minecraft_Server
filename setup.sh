@@ -29,7 +29,6 @@ installPackagesForUbuntu() {
 setFirewallRulesRHEL() {
   sudo firewall-cmd --permanent --zone=public --add-port=25565/tcp
   sudo firewall-cmd --reload
-
 }
 setFirewallRulesUbuntu() {
   sudo ufw allow 25565
@@ -84,28 +83,42 @@ installAndStartMCService() {
   sudo systemctl start minecraft.service
 }
 
-test() {
-  echo "This is a test function"
-}
-
 ##############################################
 # Logic to determine which functions to call #
 ##############################################
 
 if [[ "$UNAME" == "Darwin" ]]; then
   echo "You are on a Mac. This process is not yet supported on MacOS"
-  $test
 else
   ISSUE_FILE=$(cat /etc/issue)
   if [[ "$ISSUE_FILE" == *"Ubuntu"* ]]; then
     echo "You are on Ubuntu"
+    installPackagesForUbuntu
+    setFirewallRulesUbuntu
+    createMCUserAndGroups
+    installJava
+    setupMCServerDirectory
+    installMCServer
   else
     RHEL_VERSION=$(hostnamectl | grep "Operating System")
     if [[ "$RHEL_VERSION" == *"Oracle"* ]]; then
+      installPackagesForOracleLinux
+      setFirewallRulesRHEL
+      createMCUserAndGroups
+      installJava
+      setupMCServerDirectory
+      installMCServer
+      installAndStartMCService
       echo "You are on Oracle Linux"
-      $installPackagesForOracleLinux
     elif [["$RHEL_VERSION" == *"CentOS"*]]; then
-      echo "You are on Oracle Linux"
+      echo "You are on CentOS"
+      installPackagesForCentOS
+      setFirewallRulesRHEL
+      createMCUserAndGroups
+      installJava
+      setupMCServerDirectory
+      installMCServer
+      installAndStartMCService
     else
       echo "Unfortunately, this script is not setup for $RHEL_VERSION"
     fi
