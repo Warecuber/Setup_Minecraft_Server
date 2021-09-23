@@ -17,6 +17,11 @@ sudo firewall-cmd --reload
 sudo useradd minecraft
 sudo groupadd mc_server_admin
 sudo usermod -aG mc_server_admin minecraft
+sudo usermod -aG mc_server_admin $USER #adds current user to Minecraft admin group
+
+# Set Minecraft up as a service
+mv minecraft.service /etc/systemd/system/minecraft.service
+chmod +x /etc/systemd/system/minecraft.service
 
 # Download and install JDK 16
 curl -O https://download.java.net/java/GA/jdk16.0.2/d4a915d82b4c4fbb9bde534da945d746/7/GPL/openjdk-16.0.2_linux-x64_bin.tar.gz
@@ -39,3 +44,11 @@ sudo wget https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226
 
 # Auto accept Minecraft EULA
 echo "eula=true" > $MC_SERVER_DIR/server/eula.txt
+
+# Move the start script 
+mv ~/Setup_Minecraft_Server/start_minecraft_server.sh start_minecraft_server.sh
+chmod +x start_mincraft_server.sh
+
+systemctl daemon-reload
+systemctl enable minecraft.service
+systemctl start minecraft.service
