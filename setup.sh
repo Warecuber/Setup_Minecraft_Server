@@ -62,8 +62,9 @@ installJava() {
 
 # Create and configure the MC server direcotyr
 setupMCServerDirectory() {
+  sudo mkdir /opt/minecraft
   sudo mkdir $MC_SERVER_DIR
-  mv ~/Setup_Minecraft_Server/start_minecraft_server.sh start_minecraft_server.sh
+  mv ~/Setup_Minecraft_Server/start_minecraft_server.sh $MC_SERVER_DIR/start_minecraft_server.sh
   chmod +x start_mincraft_server.sh
 }
 
@@ -80,8 +81,8 @@ installMCServer() {
 
 # Install and start MC Service
 installAndStartMCService() {
-  mv minecraft.service /etc/systemd/system/minecraft.service
-  chmod +x /etc/systemd/system/minecraft.service
+  sudo mv minecraft.service /etc/systemd/system/minecraft.service
+  sudo chmod +x /etc/systemd/system/minecraft.service
   sudo systemctl daemon-reload
   sudo systemctl enable minecraft.service
   sudo systemctl start minecraft.service
