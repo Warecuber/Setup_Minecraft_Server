@@ -110,8 +110,6 @@ else
       echo "Unfortunately, this script is not setup for $RHEL_VERSION"
     fi
   fi
-  else
-  echo "something else"
 fi
 
 # # Fix file permissions
