@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # variables
 MC_USER_HOME_DIR="/home/minecraft"
 MC_SERVER_DIR="/opt/minecraft/server"
@@ -68,8 +69,11 @@ setupMCServerDirectory() {
 
 # Install MC Server 1.17.1
 installMCServer() {
-  sudo wget https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar -P $MC_SERVER_DIR
-  echo "eula=true" >$MC_SERVER_DIR/eula.txt
+  read -n1 -p "Do you want to install a vanilla Minecraft 1.17.1 server now? y/n: " installServer
+  if [[ $addSeinstallServerrvice == "y" || $installServer == "Y" ]]; then
+    sudo wget https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar -P $MC_SERVER_DIR
+    echo "eula=true" >$MC_SERVER_DIR/eula.txt
+  fi
   sudo chown -R root:mc_server_admin $MC_SERVER_DIR
   sudo chmod 770 -R $MC_SERVER_DIR
 }
@@ -81,6 +85,13 @@ installAndStartMCService() {
   sudo systemctl daemon-reload
   sudo systemctl enable minecraft.service
   sudo systemctl start minecraft.service
+}
+
+determineIfServiceIsDesired() {
+  read -n1 -p "Do you want to add a Minecraft service? This allows you to start or stop the server with systemctl y/n: " addService
+  if [[ $addService == "y" || $addService == "Y" ]]; then
+    installAndStartMCService
+  fi
 }
 
 ##############################################
@@ -102,14 +113,14 @@ else
   else
     RHEL_VERSION=$(hostnamectl | grep "Operating System")
     if [[ "$RHEL_VERSION" == *"Oracle"* ]]; then
+      echo "You are on Oracle Linux"
       installPackagesForOracleLinux
       setFirewallRulesRHEL
       createMCUserAndGroups
       installJava
       setupMCServerDirectory
       installMCServer
-      installAndStartMCService
-      echo "You are on Oracle Linux"
+      determineIfServiceIsDesired
     elif [["$RHEL_VERSION" == *"CentOS"*]]; then
       echo "You are on CentOS"
       installPackagesForCentOS
@@ -118,11 +129,9 @@ else
       installJava
       setupMCServerDirectory
       installMCServer
-      installAndStartMCService
+      determineIfServiceIsDesired
     else
       echo "Unfortunately, this script is not setup for $RHEL_VERSION"
     fi
   fi
 fi
-
-# # Fix file permissions
