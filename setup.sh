@@ -49,6 +49,6 @@ echo "eula=true" > $MC_SERVER_DIR/server/eula.txt
 mv ~/Setup_Minecraft_Server/start_minecraft_server.sh start_minecraft_server.sh
 chmod +x start_mincraft_server.sh
 
-systemctl daemon-reload
-systemctl enable minecraft.service
-systemctl start minecraft.service
+sudo systemctl daemon-reload
+sudo systemctl enable minecraft.service
+sudo systemctl start minecraft.service
