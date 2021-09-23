@@ -1,8 +1,8 @@
 #!/bin/bash
 # variables
-$MC_USER_HOME_DIR="/home/minecraft"
-$MC_SERVER_DIR="/opt/minecraft/server"
-$JAVA_HOME="/opt/jdk-16.0.2"
+MC_USER_HOME_DIR="/home/minecraft"
+MC_SERVER_DIR="/opt/minecraft/server"
+JAVA_HOME="/opt/jdk-16.0.2"
 
 # Install packages
 sudo dnf update -y
