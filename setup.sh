@@ -105,11 +105,12 @@ installMCServer() {
   if [[ "$installServer" == "y" || "$installServer" == "Y" ]]; then
     echo "Installing MC Server 1.17.1"
     sudo wget https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar -P $MC_SERVER_DIR
-    echo "eula=true" >eula.txt
-    sudo mv eula.txt $MC_SERVER_DIR/eula.txt
   else
     echo "Not installing MC server 1.17.1"
   fi
+  # Accept the EULA
+  echo "eula=true" >eula.txt
+  sudo mv eula.txt $MC_SERVER_DIR/eula.txt
   sudo chown -R root:mc_server_admin $MC_SERVER_DIR
   sudo chmod 770 -R $MC_SERVER_DIR
 }
@@ -209,18 +210,8 @@ else
       installMCServer
       determineIfServiceIsDesired
       installFinished
-    elif [["$RHEL_VERSION" == *"CentOS"*]]; then
+    elif [[ "$RHEL_VERSION" == *"CentOS"* ]] || [[ "$RHEL_VERSION" == *"Alma"* ]]; then
       echo "You are on CentOS"
-      installPackagesForCentOS
-      setFirewallRulesRHEL
-      createMCUserAndGroups
-      installJava
-      setupMCServerDirectory
-      installMCServer
-      determineIfServiceIsDesired
-      installFinished
-    elif [["$RHEL_VERSION" == *"Alma"*]]; then
-      echo "You are on Alma Linux!"
       installPackagesForCentOS
       setFirewallRulesRHEL
       createMCUserAndGroups
