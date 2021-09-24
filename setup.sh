@@ -51,20 +51,24 @@ createMCUserAndGroups() {
   if [[ "$CHECK_MC_SERVICE_ACCOUNT_EXISTS" == "" ]]; then
     echo "Minecraft user does not exist. Creating..."
     sudo useradd minecraft
-    sudo groupadd mc_server_admin
-    sudo usermod -aG mc_server_admin minecraft
-    sudo usermod -aG mc_server_admin $USER #adds current user to Minecraft admin group
+    fixGroups
   else
     CHECK_MC_SERVICE_ACCOUNT_GROUPS=$(groups minecraft)
     if [[ ! "$CHECK_MC_SERVICE_ACCOUNT_GROUPS" == *"mc_server_admin"* ]]; then
       echo "Minecraft user exists, but is missing te right groups. Updating...."
-      sudo groupadd mc_server_admin
-      sudo usermod -aG mc_server_admin minecraft
-      sudo usermod -aG mc_server_admin $USER #adds current user to Minecraft admin group
+      fixGroups
     else
       echo "Minecraft Service account already exists with groups"
     fi
   fi
+}
+
+fixGroups() {
+  sudo groupadd mc_server_admin
+  sudo usermod -g mc_server_admin minecraft
+  sudo usermod -aG minecraft minecraft
+  sudo usermod -g mc_server_admin $USER #adds current user to Minecraft admin group
+  sudo usermod -aG $USER $USER          #adds current user to Minecraft admin group
 }
 
 # Install Java
@@ -83,7 +87,6 @@ installJava() {
     # Add Java variables to Minecraft Service Account Bashrc
     echo "export JAVA_HOME=/opt/jdk-16.0.2" >>$MC_USER_HOME_DIR/.bashrc
     echo "export PATH=$PATH:$JAVA_HOME/bin" >>$MC_USER_HOME_DIR/.bashrc
-    . ~/.bashrc
   fi
 }
 
@@ -167,7 +170,8 @@ determineIfServiceIsDesired() {
 }
 
 addCustomBashRCCommands() {
-  echo "alias updateFilePermissions='/opt/minecraft/update_file_permissions.sh $MC_SERVER_DIR'" >>~/.bashrc
+  echo "alias updateFilePermissions='$MC_SERVER_DIR/update_file_permissions.sh $MC_SERVER_DIR'" >>~/.bashrc
+  . ~/.bashrc
 }
 
 installFinished() {
