@@ -10,5 +10,8 @@ Use `git clone https://github.com/Warecuber/Setup_Minecraft_Server.git && cd Set
 To start the setup, run `./start.sh`
 
 Your server files are located in `/opt/minecraft/server`
+
+If you opted not to install the Vanilla 1.17.1 server, just place your desired server jar in /opt/minecraft/server (or the shared folder if you selected the option to install the SMB share). Make sure the jar file says server somewhere in the name or it won't work.
+
 If you make any changes, you will need to update the file permissions to avoid errors. Just use the following:
-`chown -R root:mc_server_admin /opt/minecraft/server && sudo chmod -R 770 /opt/minecraft/server`
+`updateFilePermissions`

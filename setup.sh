@@ -93,7 +93,8 @@ setupMCServerDirectory() {
     sudo mkdir /opt/minecraft
     sudo mkdir $MC_SERVER_DIR
     sudo mv ~/Setup_Minecraft_Server/start_minecraft_server.sh $MC_SERVER_DIR/start_minecraft_server.sh
-    chmod +x $MC_SERVER_DIR/start_minecraft_server.sh
+    sudo mv ~/Setup_Minecraft_Server/update_file_permissions.sh $MC_SERVER_DIR/update_file_permissions.sh
+    chmod +x $MC_SERVER_DIR/*.sh
   else
     echo "$MC_SERVER_DIR already exists"
   fi
@@ -111,8 +112,7 @@ installMCServer() {
   # Accept the EULA
   echo "eula=true" >eula.txt
   sudo mv eula.txt $MC_SERVER_DIR/eula.txt
-  sudo chown -R root:mc_server_admin $MC_SERVER_DIR
-  sudo chmod 770 -R $MC_SERVER_DIR
+  $MC_SERVER_DIR/update_file_permissions.sh $MC_SERVER_DIR
 }
 
 # Install and start MC Service
@@ -166,6 +166,10 @@ determineIfServiceIsDesired() {
   fi
 }
 
+addCustomBashRCCommands() {
+  echo "alias updateFilePermissions='/opt/minecraft/update_file_permissions.sh $MC_SERVER_DIR'" >>~/.bashrc
+}
+
 installFinished() {
   echo ""
   echo ""
@@ -197,6 +201,7 @@ else
     installMCServer
     determineIfServiceIsDesired
     installSMBUbuntu
+    addCustomBashRCCommands
     installFinished
   else
     RHEL_VERSION=$(hostnamectl | grep "Operating System")
@@ -209,6 +214,7 @@ else
       setupMCServerDirectory
       installMCServer
       determineIfServiceIsDesired
+      addCustomBashRCCommands
       installFinished
     elif [[ "$RHEL_VERSION" == *"CentOS"* ]] || [[ "$RHEL_VERSION" == *"Alma"* ]]; then
       echo "You are on CentOS"
@@ -219,6 +225,7 @@ else
       setupMCServerDirectory
       installMCServer
       determineIfServiceIsDesired
+      addCustomBashRCCommands
       installFinished
     else
       echo "Unfortunately, this script is not setup for $RHEL_VERSION"
