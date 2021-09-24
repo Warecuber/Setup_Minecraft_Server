@@ -152,6 +152,7 @@ else
       installJava
       setupMCServerDirectory
       installMCServer
+      determineIfServiceIsDesired
     elif [["$RHEL_VERSION" == *"CentOS"*]]; then
       echo "You are on CentOS"
       installPackagesForCentOS
