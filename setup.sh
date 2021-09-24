@@ -88,7 +88,7 @@ setupMCServerDirectory() {
     sudo mkdir /opt/minecraft
     sudo mkdir $MC_SERVER_DIR
     sudo mv ~/Setup_Minecraft_Server/start_minecraft_server.sh $MC_SERVER_DIR/start_minecraft_server.sh
-    chmod +x start_mincraft_server.sh
+    chmod +x $MC_SERVER_DIR/start_minecraft_server.sh
   else
     echo "$MC_SERVER_DIR already exists"
   fi
@@ -142,6 +142,7 @@ else
     installJava
     setupMCServerDirectory
     installMCServer
+    determineIfServiceIsDesired
   else
     RHEL_VERSION=$(hostnamectl | grep "Operating System")
     if [[ "$RHEL_VERSION" == *"Oracle"* ]]; then
