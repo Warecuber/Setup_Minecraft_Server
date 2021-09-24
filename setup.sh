@@ -41,6 +41,7 @@ setFirewallRulesUbuntu() {
   if [[ "$openSSH" == "y" || "$openSSH" == "Y" ]]; then
     sudo ufw allow 22
   fi
+  echo "Added rules... enabling Firewall"
   sudo ufw enable
 }
 
@@ -123,11 +124,46 @@ installAndStartMCService() {
   sudo systemctl start minecraft.service
 }
 
+#SMB config
+installSMBUbuntu() {
+  read -n1 -p "Do you want to install Samba to share the Minecraft server files on your network? y/n: " installSMB
+  if [[ "$installSMB" == "y" || "$installSMB" == "Y" ]]; then
+    echo "Installing and configuring SMB..."
+    sudo apt-get install samba -y
+    # Install SMB config
+    sudo tee -a /etc/samba/smb.conf <<EOF
+[Minecraft Server]
+
+comment = Minecraft Server files
+path = $MC_SERVER_DIR
+browsable = yes
+valid users = mc_server_admin
+read only = no
+guest on = no
+EOF
+    testparm
+    sudo service smbd restart
+    echo "Set the SMB password for $USER: "
+    sudo smbpasswd -a $USER
+  fi
+}
+
+installSMBRHEL() {
+  read -n1 -p "Do you want to install Samba to share the Minecraft server files on your network? y/n: " installSMB
+  if [[ "$installSMB" == "y" || "$installSMB" == "Y" ]]; then
+    echo "Installing and configuring SMB..."
+  fi
+}
+
 determineIfServiceIsDesired() {
   read -n1 -p "Do you want to add a Minecraft service? This allows you to start or stop the server with systemctl y/n: " addService
   if [[ "$addService" == "y" || "$addService" == "Y" ]]; then
     installAndStartMCService
   fi
+}
+
+determineIfSMBIsDesired() {
+
 }
 
 installFinished() {
@@ -160,6 +196,7 @@ else
     setupMCServerDirectory
     installMCServer
     determineIfServiceIsDesired
+    installSMBUbuntu
     installFinished
   else
     RHEL_VERSION=$(hostnamectl | grep "Operating System")
