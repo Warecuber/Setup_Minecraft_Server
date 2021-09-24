@@ -130,6 +130,15 @@ determineIfServiceIsDesired() {
   fi
 }
 
+installFinished() {
+  echo "==========================================================="
+  echo "==================== Install finished! ===================="
+  echo "==========================================================="
+  echo "==========================================================="
+  echo "= Run 'sudo service minecraft start' to launch the server ="
+  echo "==========================================================="
+}
+
 ##############################################
 # Logic to determine which functions to call #
 ##############################################
@@ -147,6 +156,7 @@ else
     setupMCServerDirectory
     installMCServer
     determineIfServiceIsDesired
+    installFinished
   else
     RHEL_VERSION=$(hostnamectl | grep "Operating System")
     if [[ "$RHEL_VERSION" == *"Oracle"* ]]; then
@@ -158,6 +168,7 @@ else
       setupMCServerDirectory
       installMCServer
       determineIfServiceIsDesired
+      installFinished
     elif [["$RHEL_VERSION" == *"CentOS"*]]; then
       echo "You are on CentOS"
       installPackagesForCentOS
@@ -167,6 +178,7 @@ else
       setupMCServerDirectory
       installMCServer
       determineIfServiceIsDesired
+      installFinished
     elif [["$RHEL_VERSION" == *"Alma"*]]; then
       echo "You are on Alma Linux!"
       installPackagesForCentOS
@@ -176,6 +188,7 @@ else
       setupMCServerDirectory
       installMCServer
       determineIfServiceIsDesired
+      installFinished
     else
       echo "Unfortunately, this script is not setup for $RHEL_VERSION"
     fi
