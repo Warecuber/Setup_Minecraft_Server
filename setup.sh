@@ -58,9 +58,9 @@ createMCUserAndGroups() {
       sudo groupadd mc_server_admin
       sudo usermod -aG mc_server_admin minecraft
       sudo usermod -aG mc_server_admin $USER #adds current user to Minecraft admin group
-    fi
     else
-    echo "Minecraft Service account already exists with groups"
+      echo "Minecraft Service account already exists with groups"
+    fi
   fi
 }
 
