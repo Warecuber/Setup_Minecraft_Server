@@ -162,10 +162,6 @@ determineIfServiceIsDesired() {
   fi
 }
 
-determineIfSMBIsDesired() {
-
-}
-
 installFinished() {
   echo ""
   echo ""
