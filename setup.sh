@@ -46,18 +46,20 @@ setFirewallRulesUbuntu() {
 
 # Create MC User
 createMCUserAndGroups() {
-  CHECK_FOR_MC_SERVICE_ACCOUNT=$(groups minecraft)
-  if [[ "$CHECK_FOR_MC_SERVICE_ACCOUNT" == *"no such user"* ]]; then
+  CHECK_MC_SERVICE_ACCOUNT_EXISTS=$(id -u minecraft)
+  if [[ "$CHECK_MC_SERVICE_ACCOUNT_EXISTS" == "" ]]; then
     sudo useradd minecraft
     sudo groupadd mc_server_admin
     sudo usermod -aG mc_server_admin minecraft
     sudo usermod -aG mc_server_admin $USER #adds current user to Minecraft admin group
-  elif [[ ! "$CHECK_FOR_MC_SERVICE_ACCOUNT" == *"mc_server_admin"* ]]; then
-    sudo groupadd mc_server_admin
-    sudo usermod -aG mc_server_admin minecraft
-    sudo usermod -aG mc_s
-    sudo usermod -aG mc_server_admin $USER #adds current user to Minecraft admin group
   else
+    CHECK_MC_SERVICE_ACCOUNT_GROUPS=$(groups minecraft)
+    if [[ ! "$CHECK_MC_SERVICE_ACCOUNT_GROUPS" == *"mc_server_admin"* ]]; then
+      sudo groupadd mc_server_admin
+      sudo usermod -aG mc_server_admin minecraft
+      sudo usermod -aG mc_server_admin $USER #adds current user to Minecraft admin group
+    fi
+    else
     echo "Minecraft Service account already exists with groups"
   fi
 }
