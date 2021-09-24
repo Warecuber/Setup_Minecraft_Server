@@ -137,14 +137,17 @@ installSMBUbuntu() {
 comment = Minecraft Server files
 path = $MC_SERVER_DIR
 browsable = yes
-valid users = mc_server_admin
+valid groups = mc_server_admin
 read only = no
 guest on = no
 EOF
-    testparm
     sudo service smbd restart
     echo "Set the SMB password for $USER: "
     sudo smbpasswd -a $USER
+
+    # Open the ports
+    sudo ufw allow 445
+    sudo ufw allow 139
   fi
 }
 
