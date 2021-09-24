@@ -38,33 +38,46 @@ setFirewallRulesUbuntu() {
 
 # Create MC User
 createMCUserAndGroups() {
-  sudo useradd minecraft
-  sudo groupadd mc_server_admin
-  sudo usermod -aG mc_server_admin minecraft
-  sudo usermod -aG mc_server_admin $USER #adds current user to Minecraft admin group
+  CHECK_FOR_MC_SERVICE_ACCOUNT=$(groups minecraft)
+  if [[ "$CHECK_FOR_MC_SERVICE_ACCOUNT" == *"no such user"* ]]; then
+    sudo useradd minecraft
+    sudo groupadd mc_server_admin
+    sudo usermod -aG mc_server_admin minecraft
+    sudo usermod -aG mc_server_admin $USER #adds current user to Minecraft admin group
+  elif [[ "$CHECK_FOR_MC_SERVICE_ACCOUNT" == "minecraft : minecraft" ]]; then
+    sudo groupadd mc_server_admin
+    sudo usermod -aG mc_server_admin minecraft
+    sudo usermod -aG mc_s
+  else
+    echo "Minecraft Service account already exists with groups"
+  fi
 }
 
 # Install Java
 installJava() {
-  curl -O https://download.java.net/java/GA/jdk16.0.2/d4a915d82b4c4fbb9bde534da945d746/7/GPL/openjdk-16.0.2_linux-x64_bin.tar.gz
-  sudo tar xvf openjdk-16.0.2_linux-x64_bin.tar.gz
-  sudo mv jdk-16.0.2 /opt/
-  rm openjdk-16.0.2_linux-x64_bin.tar.gz
-  # Add Java variables to admin bashrc
-  echo "export JAVA_HOME=$JAVA_HOME" >>~/.bashrc
-  echo "export PATH=$PATH:$JAVA_HOME/bin" >>~/.bashrc
-  # Add Java variables to Minecraft Service Account Bashrc
-  echo "export JAVA_HOME=/opt/jdk-16.0.2" >>$MC_USER_HOME_DIR/.bashrc
-  echo "export PATH=$PATH:$JAVA_HOME/bin" >>$MC_USER_HOME_DIR/.bashrc
-  . ~/.bashrc
-
+  WHERE_IS_JAVA=$(whereis java)
+  if [[ "$WHERE_IS_JAVA" == *"/opt/jdk"* ]]; then
+    echo "Java already installed"
+  else
+    curl -O https://download.java.net/java/GA/jdk16.0.2/d4a915d82b4c4fbb9bde534da945d746/7/GPL/openjdk-16.0.2_linux-x64_bin.tar.gz
+    sudo tar xvf openjdk-16.0.2_linux-x64_bin.tar.gz
+    sudo mv jdk-16.0.2 /opt/
+    rm openjdk-16.0.2_linux-x64_bin.tar.gz
+    # Add Java variables to admin bashrc
+    echo "export JAVA_HOME=$JAVA_HOME" >>~/.bashrc
+    echo "export PATH=$PATH:$JAVA_HOME/bin" >>~/.bashrc
+    # Add Java variables to Minecraft Service Account Bashrc
+    echo "export JAVA_HOME=/opt/jdk-16.0.2" >>$MC_USER_HOME_DIR/.bashrc
+    echo "export PATH=$PATH:$JAVA_HOME/bin" >>$MC_USER_HOME_DIR/.bashrc
+    . ~/.bashrc
+  fi
 }
 
 # Create and configure the MC server direcotyr
 setupMCServerDirectory() {
   sudo mkdir /opt/minecraft
   sudo mkdir $MC_SERVER_DIR
-  mv ~/Setup_Minecraft_Server/start_minecraft_server.sh $MC_SERVER_DIR/start_minecraft_server.sh
+  sudo mv ~/Setup_Minecraft_Server/start_minecraft_server.sh $MC_SERVER_DIR/start_minecraft_server.sh
   chmod +x start_mincraft_server.sh
 }
 
