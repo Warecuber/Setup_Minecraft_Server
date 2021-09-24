@@ -44,7 +44,7 @@ createMCUserAndGroups() {
     sudo groupadd mc_server_admin
     sudo usermod -aG mc_server_admin minecraft
     sudo usermod -aG mc_server_admin $USER #adds current user to Minecraft admin group
-  elif [[ "$CHECK_FOR_MC_SERVICE_ACCOUNT" == "minecraft : minecraft" ]]; then
+  elif [[ ! "$CHECK_FOR_MC_SERVICE_ACCOUNT" == *"mc_server_admin"* ]]; then
     sudo groupadd mc_server_admin
     sudo usermod -aG mc_server_admin minecraft
     sudo usermod -aG mc_s
@@ -75,10 +75,14 @@ installJava() {
 
 # Create and configure the MC server direcotyr
 setupMCServerDirectory() {
-  sudo mkdir /opt/minecraft
-  sudo mkdir $MC_SERVER_DIR
-  sudo mv ~/Setup_Minecraft_Server/start_minecraft_server.sh $MC_SERVER_DIR/start_minecraft_server.sh
-  chmod +x start_mincraft_server.sh
+  if [[ ! -d "$MC_SERVER_DIR" ]]; then
+    sudo mkdir /opt/minecraft
+    sudo mkdir $MC_SERVER_DIR
+    sudo mv ~/Setup_Minecraft_Server/start_minecraft_server.sh $MC_SERVER_DIR/start_minecraft_server.sh
+    chmod +x start_mincraft_server.sh
+  else
+    echo "$MC_SERVER_DIR already exists"
+  fi
 }
 
 # Install MC Server 1.17.1
