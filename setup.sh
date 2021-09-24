@@ -32,7 +32,6 @@ setFirewallRulesRHEL() {
   read -n1 -p "Do you want to open port 22 for SSH? y/n: " openSSH
   if [[ "$openSSH" == "y" || "$openSSH" == "Y" ]]; then
     sudo firewall-cmd --permanent --zone=public --add-port=22/tcp
-
   fi
   sudo firewall-cmd --reload
 }
