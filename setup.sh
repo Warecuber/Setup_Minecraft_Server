@@ -29,10 +29,19 @@ installPackagesForUbuntu() {
 # Set firewall rules
 setFirewallRulesRHEL() {
   sudo firewall-cmd --permanent --zone=public --add-port=25565/tcp
+  read -n1 -p "Do you want to open port 22 for SSH? y/n: " openSSH
+  if [[ "$openSSH" == "y" || "$openSSH" == "Y" ]]; then
+    sudo firewall-cmd --permanent --zone=public --add-port=22/tcp
+
+  fi
   sudo firewall-cmd --reload
 }
 setFirewallRulesUbuntu() {
   sudo ufw allow 25565
+  read -n1 -p "Do you want to open port 22 for SSH? y/n: " openSSH
+  if [[ "$openSSH" == "y" || "$openSSH" == "Y" ]]; then
+    sudo ufw allow 22
+  fi
   sudo ufw enable
 }
 
@@ -48,6 +57,7 @@ createMCUserAndGroups() {
     sudo groupadd mc_server_admin
     sudo usermod -aG mc_server_admin minecraft
     sudo usermod -aG mc_s
+    sudo usermod -aG mc_server_admin $USER #adds current user to Minecraft admin group
   else
     echo "Minecraft Service account already exists with groups"
   fi
