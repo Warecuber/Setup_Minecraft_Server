@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 User=minecraft
-Group=minecraft
+Group=mc_server_admin
 Restart=on-failure
 RestartSec=20 5
 Type=simple

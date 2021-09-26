@@ -7,7 +7,7 @@ NOTE: this script assumes you clone this repo to ~/Setup_Minecraft_Server. If yo
 To execute it, clone the repo and mark all .sh files as executable.
 Use `git clone https://github.com/Warecuber/Setup_Minecraft_Server.git && cd Setup_Minecraft_Server && chmod +x *.sh` to complete this all at once.
 
-To start the setup, run `./start.sh`
+To start the setup, run `./setup.sh`
 
 Your server files are located in `/opt/minecraft/server`
 

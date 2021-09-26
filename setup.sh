@@ -51,6 +51,7 @@ createMCUserAndGroups() {
   if [[ "$CHECK_MC_SERVICE_ACCOUNT_EXISTS" == "" ]]; then
     echo "Minecraft user does not exist. Creating..."
     sudo useradd minecraft
+    sudo usermod --shell /bin/bash minecraft
     fixGroups
   else
     CHECK_MC_SERVICE_ACCOUNT_GROUPS=$(groups minecraft)
